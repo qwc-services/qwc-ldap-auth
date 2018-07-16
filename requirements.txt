@@ -1,0 +1,6 @@
+Flask==0.12.2
+flask-jwt-extended==3.5.1
+flask_login
+Flask-WTF
+flask-ldap3-login
+git+https://github.com/qwc-services/qwc-services-core.git#egg=qwc-services-core

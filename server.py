@@ -26,6 +26,12 @@ jwt = jwt_manager(app)
 # Hostname of your LDAP Server
 app.config['LDAP_HOST'] = os.environ.get('LDAP_HOST', 'localhost')
 
+# The port number of your LDAP server.
+app.config['LDAP_PORT'] = os.environ.get('LDAP_PORT', 389)
+
+# Set to True if your server uses SSL
+app.config['LDAP_USE_SSL'] = os.environ.get('LDAP_USE_SSL', False)
+
 # Base DN of your directory
 app.config['LDAP_BASE_DN'] = os.environ.get(
     'LDAP_BASE_DN', 'dc=example,dc=org')
@@ -36,14 +42,20 @@ app.config['LDAP_USER_DN'] = os.environ.get('LDAP_USER_DN', 'ou=users')
 # Groups DN to be prepended to the Base DN
 app.config['LDAP_GROUP_DN'] = os.environ.get('LDAP_GROUP_DN', 'ou=groups')
 
+# Search for groups
 app.config['LDAP_SEARCH_FOR_GROUPS'] = os.environ.get(
     'LDAP_SEARCH_FOR_GROUPS', False)
-# app.config['LDAP_GROUP_SEARCH_SCOPE'] = os.environ.get(
-#     'LDAP_GROUP_SEARCH_SCOPE', 'SUBTREE')
+# Specifies what scope to search in when searching for a specific group
+app.config['LDAP_GROUP_SEARCH_SCOPE'] = os.environ.get(
+     'LDAP_GROUP_SEARCH_SCOPE', 'LEVEL')
 # app.config['LDAP_GROUP_OBJECT_FILTER'] = os.environ.get(
 #     'LDAP_GROUP_OBJECT_FILTER', '(objectclass=posixGroup)')
 # app.config['LDAP_GROUP_MEMBERS_ATTR'] = os.environ.get(
 #     'LDAP_GROUP_MEMBERS_ATTR', 'userPrincipalName')
+
+# Specifies what scope to search in when searching for a specific user
+app.config['LDAP_USER_SEARCH_SCOPE'] = os.environ.get(
+    'LDAP_USER_SEARCH_SCOPE', 'LEVEL')
 
 # The RDN attribute for your user schema on LDAP
 app.config['LDAP_USER_RDN_ATTR'] = os.environ.get('LDAP_USER_RDN_ATTR', 'cn')

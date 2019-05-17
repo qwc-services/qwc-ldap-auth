@@ -27,7 +27,7 @@ jwt = jwt_manager(app)
 app.config['LDAP_HOST'] = os.environ.get('LDAP_HOST', 'localhost')
 
 # The port number of your LDAP server.
-app.config['LDAP_PORT'] = os.environ.get('LDAP_PORT', 389)
+app.config['LDAP_PORT'] = int(os.environ.get('LDAP_PORT', 389))
 
 # Set to True if your server uses SSL
 app.config['LDAP_USE_SSL'] = os.environ.get('LDAP_USE_SSL', False)

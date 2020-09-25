@@ -4,4 +4,4 @@ flask_login
 Flask-WTF
 flask-ldap3-login
 werkzeug==0.16.1
-git+https://github.com/qwc-services/qwc-services-core.git#egg=qwc-services-core
+qwc-services-core==1.1.1

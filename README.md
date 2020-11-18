@@ -1,3 +1,6 @@
+[![](https://github.com/qwc-services/qwc-ldap-auth/workflows/build/badge.svg)](https://github.com/qwc-services/qwc-ldap-auth/actions)
+[![](https://img.shields.io/docker/pulls/sourcepole/qwc-ldap-auth)](https://hub.docker.com/r/sourcepole/qwc-ldap-auth)
+
 Authentication with LDAP/Active Directory
 =========================================
 

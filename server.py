@@ -82,6 +82,9 @@ if os.environ.get('TENANT_HEADER'):
     app.wsgi_app = TenantPrefixMiddleware(
         app.wsgi_app, os.environ.get('TENANT_HEADER'))
 
+if os.environ.get('TENANT_HEADER') or os.environ.get('TENANT_URL_RE'):
+    app.session_interface = TenantSessionInterface(os.environ)
+
 
 # Create a dictionary to store the users in when they authenticate.
 users = {}

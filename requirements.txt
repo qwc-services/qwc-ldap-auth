@@ -1,5 +1,5 @@
 Flask==0.12.2
-flask-jwt-extended==3.5.1
+Flask-JWT-Extended==3.25.0
 flask_login
 Flask-WTF
 flask-ldap3-login

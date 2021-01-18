@@ -14,6 +14,9 @@ from flask_jwt_extended import (
 from flask_ldap3_login import LDAP3LoginManager
 from flask_ldap3_login.forms import LDAPLoginForm
 from qwc_services_core.jwt import jwt_manager
+from qwc_services_core.tenant_handler import (
+    TenantHandler, TenantPrefixMiddleware, TenantSessionInterface)
+
 
 app = Flask(__name__)
 
@@ -73,6 +76,12 @@ app.config['LDAP_BIND_USER_PASSWORD'] = os.environ.get(
 
 login_manager = LoginManager(app)              # Setup a Flask-Login Manager
 ldap_manager = LDAP3LoginManager(app)          # Setup a LDAP3 Login Manager.
+
+
+if os.environ.get('TENANT_HEADER'):
+    app.wsgi_app = TenantPrefixMiddleware(
+        app.wsgi_app, os.environ.get('TENANT_HEADER'))
+
 
 # Create a dictionary to store the users in when they authenticate.
 users = {}

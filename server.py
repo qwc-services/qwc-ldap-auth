@@ -1,5 +1,6 @@
 import os
 import sys
+import logging
 
 from flask import Flask, jsonify, request, flash, render_template, redirect, \
     make_response, url_for, render_template_string
@@ -73,6 +74,11 @@ app.config['LDAP_BIND_USER_DN'] = os.environ.get('LDAP_BIND_USER_DN', None)
 # The Password to bind to LDAP with
 app.config['LDAP_BIND_USER_PASSWORD'] = os.environ.get(
     'LDAP_BIND_USER_PASSWORD', None)
+
+app.config['DEBUG'] = os.environ.get('FLASK_ENV', '') == 'development'
+if app.config['DEBUG']:
+    logging.getLogger('flask_ldap3_login').setLevel(logging.DEBUG)
+
 
 login_manager = LoginManager(app)              # Setup a Flask-Login Manager
 ldap_manager = LDAP3LoginManager(app)          # Setup a LDAP3 Login Manager.

@@ -99,10 +99,11 @@ users = {}
 # Declare an Object Model for the user, and make it comply with the
 # flask-login UserMixin mixin.
 class User(UserMixin):
-    def __init__(self, dn, username, data):
+    def __init__(self, dn, username, info, groups):
         self.dn = dn
         self.username = username
-        self.data = data
+        self.info = info
+        self.groups = groups
 
     def __repr__(self):
         return self.dn
@@ -126,8 +127,8 @@ def load_user(id):
 # Here you have to save the user, and return it so it can be used in the
 # login controller.
 @ldap_manager.save_user
-def save_user(dn, username, data, memberships):
-    user = User(dn, username, data)
+def save_user(dn, username, info, groups):
+    user = User(dn, username, info, groups)
     users[dn] = user
     return user
 
@@ -158,6 +159,7 @@ def login():
         user = form.user
         login_user(user)
         app.logger.info("Logging in as user '%s'" % user.username)
+        app.logger.info("Groups: %s" % user.groups)
 
         # Create the tokens we will be sending back to the user
         access_token = create_access_token(identity=user.username)

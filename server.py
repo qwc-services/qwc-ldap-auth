@@ -7,7 +7,7 @@ from flask import Flask, jsonify, request, flash, render_template, redirect, \
 from flask_login import LoginManager, current_user, login_user, logout_user, \
     UserMixin
 from flask_jwt_extended import (
-    jwt_required, jwt_optional, create_access_token,
+    jwt_optional, create_access_token,
     jwt_refresh_token_required, create_refresh_token, get_csrf_token,
     get_jwt_identity, set_access_cookies,
     set_refresh_cookies, unset_jwt_cookies
@@ -52,10 +52,13 @@ app.config['LDAP_SEARCH_FOR_GROUPS'] = os.environ.get(
 # Specifies what scope to search in when searching for a specific group
 app.config['LDAP_GROUP_SEARCH_SCOPE'] = os.environ.get(
      'LDAP_GROUP_SEARCH_SCOPE', 'LEVEL')
-# app.config['LDAP_GROUP_OBJECT_FILTER'] = os.environ.get(
-#     'LDAP_GROUP_OBJECT_FILTER', '(objectclass=posixGroup)')
-# app.config['LDAP_GROUP_MEMBERS_ATTR'] = os.environ.get(
-#     'LDAP_GROUP_MEMBERS_ATTR', 'userPrincipalName')
+
+# Specifies what object filter to apply when searching for groups.
+app.config['LDAP_GROUP_OBJECT_FILTER'] = os.environ.get(
+    'LDAP_GROUP_OBJECT_FILTER', '(objectclass=group)')
+# Specifies the LDAP attribute where group members are declared.
+app.config['LDAP_GROUP_MEMBERS_ATTR'] = os.environ.get(
+    'LDAP_GROUP_MEMBERS_ATTR', 'uniqueMember')
 
 # Specifies what scope to search in when searching for a specific user
 app.config['LDAP_USER_SEARCH_SCOPE'] = os.environ.get(
@@ -160,6 +163,11 @@ def login():
         login_user(user)
         app.logger.info("Logging in as user '%s'" % user.username)
         app.logger.info("Groups: %s" % user.groups)
+        # Currently supported identity with single group:
+        # if groupname:
+        #     identity = {'username': username, 'group': groupname}
+        # else:
+        #     identity = username
 
         # Create the tokens we will be sending back to the user
         access_token = create_access_token(identity=user.username)
@@ -174,7 +182,7 @@ def login():
 
 
 @app.route('/logout', methods=['GET', 'POST'])
-@jwt_required
+@jwt_optional
 def logout():
     target_url = request.args.get('url', '/')
     resp = make_response(redirect(target_url))

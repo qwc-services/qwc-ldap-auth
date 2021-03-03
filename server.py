@@ -21,9 +21,9 @@ from qwc_services_core.tenant_handler import (
 
 app = Flask(__name__)
 
-app.secret_key = os.environ.get('JWT_SECRET_KEY', os.urandom(24))
-
 jwt = jwt_manager(app)
+app.secret_key = app.config['JWT_SECRET_KEY']
+
 
 # https://flask-ldap3-login.readthedocs.io/en/latest/quick_start.html
 
@@ -78,6 +78,10 @@ app.config['LDAP_BIND_USER_DN'] = os.environ.get('LDAP_BIND_USER_DN', None)
 app.config['LDAP_BIND_USER_PASSWORD'] = os.environ.get(
     'LDAP_BIND_USER_PASSWORD', None)
 
+# Group name attribute in LDAP group response
+LDAP_GROUP_NAME_ATTRIBUTE = os.environ.get('LDAP_GROUP_NAME_ATTRIBUTE', 'cn')
+
+
 app.config['DEBUG'] = os.environ.get('FLASK_ENV', '') == 'development'
 if app.config['DEBUG']:
     logging.getLogger('flask_ldap3_login').setLevel(logging.DEBUG)
@@ -106,7 +110,19 @@ class User(UserMixin):
         self.dn = dn
         self.username = username
         self.info = info
-        self.groups = groups
+        if groups:
+            # LDAP query returns a dict like
+            #   [{'cn': 'dl_qwc_login_r', ...}]
+            group_names = [
+                g.get(LDAP_GROUP_NAME_ATTRIBUTE)
+                for g in groups if not None
+            ]
+        else:
+            group_names = None
+        self.groups = group_names
+        app.logger.debug("LDAP username: %s" % username)
+        app.logger.debug("LDAP info: %s" % info)
+        app.logger.debug("LDAP Groups: %s" % groups)
 
     def __repr__(self):
         return self.dn
@@ -160,18 +176,17 @@ def login():
     form = LDAPLoginForm()
     if form.validate_on_submit():
         user = form.user
+        # flask_login stores user in session
         login_user(user)
         app.logger.info("Logging in as user '%s'" % user.username)
         app.logger.info("Groups: %s" % user.groups)
-        # Currently supported identity with single group:
-        # if groupname:
-        #     identity = {'username': username, 'group': groupname}
-        # else:
-        #     identity = username
-
+        if user.groups:
+            identity = {'username': user.username, 'groups': user.groups}
+        else:
+            identity = user.username
         # Create the tokens we will be sending back to the user
-        access_token = create_access_token(identity=user.username)
-        # refresh_token = create_refresh_token(identity=username)
+        access_token = create_access_token(identity)
+        # refresh_token = create_refresh_token(identity)
 
         resp = make_response(redirect(target_url))
         # Set the JWTs and the CSRF double submit protection cookies

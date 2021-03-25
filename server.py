@@ -71,6 +71,10 @@ app.config['LDAP_USER_RDN_ATTR'] = os.environ.get('LDAP_USER_RDN_ATTR', 'cn')
 app.config['LDAP_USER_LOGIN_ATTR'] = os.environ.get(
     'LDAP_USER_LOGIN_ATTR', 'cn')
 
+# Default is ldap3.ALL_ATTRIBUTES (*)
+app.config['LDAP_GET_USER_ATTRIBUTES'] = os.environ.get(
+    'LDAP_GET_USER_ATTRIBUTES', '*')  # app.config['LDAP_USER_LOGIN_ATTR']
+
 # The Username to bind to LDAP with
 app.config['LDAP_BIND_USER_DN'] = os.environ.get('LDAP_BIND_USER_DN', None)
 
@@ -80,6 +84,10 @@ app.config['LDAP_BIND_USER_PASSWORD'] = os.environ.get(
 
 # Group name attribute in LDAP group response
 LDAP_GROUP_NAME_ATTRIBUTE = os.environ.get('LDAP_GROUP_NAME_ATTRIBUTE', 'cn')
+
+# Default is ldap3.ALL_ATTRIBUTES (*)
+app.config['LDAP_GET_GROUP_ATTRIBUTES'] = os.environ.get(
+    'LDAP_GET_GROUP_ATTRIBUTES', '*')  # LDAP_GROUP_NAME_ATTRIBUTE
 
 
 app.config['DEBUG'] = os.environ.get('FLASK_ENV', '') == 'development'
@@ -109,7 +117,6 @@ class User(UserMixin):
     def __init__(self, dn, username, info, groups):
         self.dn = dn
         self.username = username
-        self.info = info
         if groups:
             # LDAP query returns a dict like
             #   [{'cn': 'dl_qwc_login_r', ...}]

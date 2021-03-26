@@ -2,6 +2,7 @@ import os
 import sys
 import logging
 
+from urllib.parse import urlparse
 from flask import Flask, jsonify, request, flash, render_template, redirect, \
     make_response, url_for, render_template_string
 from flask_login import LoginManager, current_user, login_user, logout_user, \
@@ -177,7 +178,7 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    target_url = request.args.get('url', '/')
+    target_url = url_path(request.args.get('url', '/'))
     if current_user.is_authenticated:
         return redirect(target_url)
     form = LDAPLoginForm()
@@ -206,12 +207,20 @@ def login():
 @app.route('/logout', methods=['GET', 'POST'])
 @jwt_optional
 def logout():
-    target_url = request.args.get('url', '/')
+    target_url = url_path(request.args.get('url', '/'))
     resp = make_response(redirect(target_url))
     unset_jwt_cookies(resp)
     logout_user()
     return resp
 
 
+def url_path(url):
+    """ Extract path and query parameters from URL """
+    o = urlparse(url)
+    parts = list(filter(None, [o.path, o.query]))
+    return '?'.join(parts)
+
+
 if __name__ == '__main__':
+    app.logger.setLevel(logging.DEBUG)
     app.run(host='localhost', port=5017, debug=True)

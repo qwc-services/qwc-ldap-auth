@@ -22,6 +22,13 @@ from qwc_services_core.tenant_handler import (
 
 app = Flask(__name__)
 
+app.config['JWT_COOKIE_SECURE'] = bool(os.environ.get(
+    'JWT_COOKIE_SECURE', False))
+app.config['JWT_COOKIE_SAMESITE'] = os.environ.get(
+    'JWT_COOKIE_SAMESITE', 'Lax')
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = int(os.environ.get(
+    'JWT_ACCESS_TOKEN_EXPIRES', 12*3600))
+
 jwt = jwt_manager(app)
 app.secret_key = app.config['JWT_SECRET_KEY']
 

@@ -4,4 +4,4 @@ flask_login
 Flask-WTF
 flask-ldap3-login==0.9.16
 werkzeug==0.16.1
-qwc-services-core==1.1.7
+qwc-services-core==1.2.4

@@ -4,7 +4,7 @@ import logging
 
 from urllib.parse import urlparse
 from flask import Flask, jsonify, request, flash, render_template, redirect, \
-    make_response, url_for, render_template_string
+    make_response, url_for, render_template_string, get_flashed_messages
 from flask_login import LoginManager, current_user, login_user, logout_user, \
     UserMixin
 from flask_jwt_extended import (
@@ -208,6 +208,11 @@ def login():
         # in this response
         set_access_cookies(resp, access_token)
         return resp
+    else:
+        if len(get_flashed_messages()) == 0:
+            # e.g. CSRF timeout
+            flash('Form validation error')
+
     return render_template('login.html', title='Sign In', form=form)
 
 

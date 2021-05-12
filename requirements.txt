@@ -3,5 +3,6 @@ Flask-JWT-Extended==3.25.0
 flask_login
 Flask-WTF
 flask-ldap3-login==0.9.16
+python-i18n==0.3.9
 werkzeug==0.16.1
 qwc-services-core==1.2.4

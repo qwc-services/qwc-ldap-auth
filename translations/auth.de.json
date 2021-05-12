@@ -1,0 +1,12 @@
+{
+  "de": {
+    "login_page_title": "Anmeldung",
+    "login_form_title": "Login",
+    "login_button": "Anmelden",
+    "username_placeholder": "Benutzername",
+    "password_placeholder": "Passwort",
+    "forgot_password": "Passwort vergessen?",
+    "auth_failed": "Ungültiger Benutzername oder ungültiges Passwort",
+    "validation_error": "Überprüfung des Formulars fehlgeschlagen"
+  }
+}

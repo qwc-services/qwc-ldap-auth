@@ -15,6 +15,7 @@ from flask_jwt_extended import (
 )
 from flask_ldap3_login import LDAP3LoginManager
 from flask_ldap3_login.forms import LDAPLoginForm
+import i18n
 from qwc_services_core.jwt import jwt_manager
 from qwc_services_core.tenant_handler import (
     TenantHandler, TenantPrefixMiddleware, TenantSessionInterface)
@@ -32,6 +33,8 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = int(os.environ.get(
 jwt = jwt_manager(app)
 app.secret_key = app.config['JWT_SECRET_KEY']
 
+i18n.set('load_path', ['./translations'])
+SUPPORTED_LANGUAGES = ['en', 'de']
 
 # https://flask-ldap3-login.readthedocs.io/en/latest/quick_start.html
 
@@ -211,9 +214,10 @@ def login():
     else:
         if len(get_flashed_messages()) == 0:
             # e.g. CSRF timeout
-            flash('Form validation error')
+            flash(i18n.t('auth.validation_error'))
 
-    return render_template('login.html', title='Sign In', form=form)
+    return render_template('login.html', form=form, i18n=i18n,
+                           title=i18n.t("auth.login_page_title"))
 
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -224,6 +228,24 @@ def logout():
     unset_jwt_cookies(resp)
     logout_user()
     return resp
+
+
+""" readyness probe endpoint """
+@app.route("/ready", methods=['GET'])
+def ready():
+    return jsonify({"status": "OK"})
+
+
+""" liveness probe endpoint """
+@app.route("/healthz", methods=['GET'])
+def healthz():
+    return jsonify({"status": "OK"})
+
+
+@app.before_request
+def set_lang():
+    i18n.set('locale',
+             request.accept_languages.best_match(SUPPORTED_LANGUAGES))
 
 
 def url_path(url):

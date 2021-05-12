@@ -1,0 +1,12 @@
+{
+  "en": {
+    "login_page_title": "Sign In",
+    "login_form_title": "Login",
+    "login_button": "Log in",
+    "username_placeholder": "username",
+    "password_placeholder": "password",
+    "forgot_password": "Forgot your password?",
+    "auth_failed": "Invalid username or password",
+    "validation_error": "Form validation error"
+  }
+}

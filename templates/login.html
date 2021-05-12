@@ -1,18 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Sign In</h1>
+    <h1>{{ i18n.t('auth.login_page_title') }}</h1>
     <form action="" method="post" autocomplete="off">
         {{ form.hidden_tag() }}
         <div class="login">
             <div class="login-screen">
                 <div class="app-title">
-                    <h1>Login</h1>
+                    <h1>{{ i18n.t('auth.login_form_title') }}</h1>
                 </div>
      
                 <div class="login-form">
                     <div class="control-group">
-                    <input type="text" class="login-field" value="" placeholder="username" name="username">
+                    <input type="text" class="login-field" value="" 
+                           placeholder="{{ i18n.t('auth.username_placeholder') }}" name="username" autofocus="">
                     <label class="login-field-icon fui-user" for="login-name"></label>
                     {% for error in form.username.errors %}
                     <span style="color: red;">[{{ error }}]</span>
@@ -20,14 +21,16 @@
                     </div>
      
                     <div class="control-group">
-                    <input type="password" class="login-field" value="" placeholder="password" name="password">
+                    <input type="password" class="login-field" value=""
+                           placeholder="{{ i18n.t('auth.password_placeholder') }}" name="password">
                     <label class="login-field-icon fui-lock" for="login-pass"></label>
                     {% for error in form.password.errors %}
                     <span style="color: red;">[{{ error }}]</span>
                     {% endfor %}
                     </div>
      
-                    <input type="submit" value="Log in" class="btn btn-primary btn-large btn-block" >
+                    <input type="submit" value="{{ i18n.t('auth.login_button') }}"
+                           class="btn btn-primary btn-large btn-block" >
                     <br>
                 </div>
             </div>

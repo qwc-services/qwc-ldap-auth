@@ -4,7 +4,7 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" type="text/css">
     </head>
     <body>
-        {% with messages = get_flashed_messages() %}
+        {% with messages = get_flashed_messages() + form.errors.get('csrf_token', []) %}
         {% if messages %}
         <ul>
             {% for message in messages %}

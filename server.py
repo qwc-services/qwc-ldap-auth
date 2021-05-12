@@ -211,10 +211,6 @@ def login():
         # in this response
         set_access_cookies(resp, access_token)
         return resp
-    else:
-        if len(get_flashed_messages()) == 0:
-            # e.g. CSRF timeout
-            flash(i18n.t('auth.validation_error'))
 
     return render_template('login.html', form=form, i18n=i18n,
                            title=i18n.t("auth.login_page_title"))

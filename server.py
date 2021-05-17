@@ -35,6 +35,9 @@ app.secret_key = app.config['JWT_SECRET_KEY']
 
 i18n.set('load_path', ['./translations'])
 SUPPORTED_LANGUAGES = ['en', 'de']
+# *Enable* WTForms built-in messages translation
+# https://wtforms.readthedocs.io/en/2.3.x/i18n/
+app.config['WTF_I18N_ENABLED'] = False
 
 # https://flask-ldap3-login.readthedocs.io/en/latest/quick_start.html
 
@@ -191,7 +194,7 @@ def login():
     target_url = url_path(request.args.get('url', '/'))
     if current_user.is_authenticated:
         return redirect(target_url)
-    form = LDAPLoginForm()
+    form = LDAPLoginForm(meta=wft_locales())
     if form.validate_on_submit():
         user = form.user
         # flask_login stores user in session
@@ -242,6 +245,10 @@ def healthz():
 def set_lang():
     i18n.set('locale',
              request.accept_languages.best_match(SUPPORTED_LANGUAGES))
+
+
+def wft_locales():
+    return {'locales': [i18n.get('locale')]}
 
 
 def url_path(url):

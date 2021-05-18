@@ -214,6 +214,12 @@ def login():
         # in this response
         set_access_cookies(resp, access_token)
         return resp
+    elif form.submit():
+        # Replace untranslated messages
+        for field, errors in form.errors.items():
+            if 'Invalid Username/Password.' in errors:
+                errors.remove('Invalid Username/Password.')
+                errors.append(i18n.t('auth.auth_failed'))
 
     return render_template('login.html', form=form, i18n=i18n,
                            title=i18n.t("auth.login_page_title"))
@@ -244,7 +250,7 @@ def healthz():
 @app.before_request
 def set_lang():
     i18n.set('locale',
-             request.accept_languages.best_match(SUPPORTED_LANGUAGES))
+             request.accept_languages.best_match(SUPPORTED_LANGUAGES) or 'en')
 
 
 def wft_locales():

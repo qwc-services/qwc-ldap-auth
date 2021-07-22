@@ -131,9 +131,21 @@ users = {}
 class User(UserMixin):
     def __init__(self, dn, username, info, groups):
         self.dn = dn
+
         # NOTE: get original LDAP username,
         #       as login username may be case insensitive
-        self.username = info.get(LDAP_USER_LOGIN_ATTR, [username])[0]
+        ldap_username = info.get(LDAP_USER_LOGIN_ATTR)
+        if ldap_username and isinstance(ldap_username, list):
+            self.username = ldap_username[0]
+        elif isinstance(ldap_username, str):
+            self.username = ldap_username
+        else:
+            app.logger.warning(
+                "Could not read attribute '%s' as username"
+                % LDAP_USER_LOGIN_ATTR
+            )
+            self.username = username
+
         if groups:
             # LDAP query returns a dict like
             #   [{'cn': 'dl_qwc_login_r', ...}]

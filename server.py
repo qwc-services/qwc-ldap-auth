@@ -83,8 +83,8 @@ app.config['LDAP_USER_SEARCH_SCOPE'] = os.environ.get(
 app.config['LDAP_USER_RDN_ATTR'] = os.environ.get('LDAP_USER_RDN_ATTR', 'cn')
 
 # The Attribute you want users to authenticate to LDAP with.
-app.config['LDAP_USER_LOGIN_ATTR'] = os.environ.get(
-    'LDAP_USER_LOGIN_ATTR', 'cn')
+LDAP_USER_LOGIN_ATTR = os.environ.get('LDAP_USER_LOGIN_ATTR', 'cn')
+app.config['LDAP_USER_LOGIN_ATTR'] = LDAP_USER_LOGIN_ATTR
 
 # Default is ldap3.ALL_ATTRIBUTES (*)
 app.config['LDAP_GET_USER_ATTRIBUTES'] = os.environ.get(
@@ -131,7 +131,9 @@ users = {}
 class User(UserMixin):
     def __init__(self, dn, username, info, groups):
         self.dn = dn
-        self.username = username
+        # NOTE: get original LDAP username,
+        #       as login username may be case insensitive
+        self.username = info.get(LDAP_USER_LOGIN_ATTR, [username])[0]
         if groups:
             # LDAP query returns a dict like
             #   [{'cn': 'dl_qwc_login_r', ...}]
@@ -142,7 +144,8 @@ class User(UserMixin):
         else:
             group_names = None
         self.groups = group_names
-        app.logger.debug("LDAP username: %s" % username)
+        app.logger.debug("Login username: %s" % username)
+        app.logger.debug("LDAP username: %s" % self.username)
         app.logger.debug("LDAP info: %s" % info)
         app.logger.debug("LDAP Groups: %s" % groups)
 
@@ -181,9 +184,9 @@ def home():
     if not current_user or current_user.is_anonymous:
         return redirect(url_for('login'))
 
-    # User is logged in, so show them a page with their cn and dn.
+    # User is logged in, so show them a page with their username and dn.
     template = """
-    <h1>Welcome: {{ current_user.data.cn }}</h1>
+    <h1>Welcome: {{ current_user.username }}</h1>
     <h2>{{ current_user.dn }}</h2>
     """
 

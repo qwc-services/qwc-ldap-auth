@@ -8,7 +8,7 @@ from flask import Flask, jsonify, request, flash, render_template, redirect, \
 from flask_login import LoginManager, current_user, login_user, logout_user, \
     UserMixin
 from flask_jwt_extended import (
-    jwt_optional, create_access_token,
+    jwt_required, create_access_token,
     jwt_refresh_token_required, create_refresh_token, get_csrf_token,
     get_jwt_identity, set_access_cookies,
     set_refresh_cookies, unset_jwt_cookies
@@ -242,7 +242,7 @@ def login():
 
 
 @app.route('/logout', methods=['GET', 'POST'])
-@jwt_optional
+@jwt_required(optional=True)
 def logout():
     target_url = url_path(request.args.get('url', '/'))
     resp = make_response(redirect(target_url))

@@ -9,7 +9,7 @@ from flask_login import LoginManager, current_user, login_user, logout_user, \
     UserMixin
 from flask_jwt_extended import (
     jwt_required, create_access_token,
-    jwt_refresh_token_required, create_refresh_token, get_csrf_token,
+    create_refresh_token, get_csrf_token,
     get_jwt_identity, set_access_cookies,
     set_refresh_cookies, unset_jwt_cookies
 )

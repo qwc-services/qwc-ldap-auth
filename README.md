@@ -20,6 +20,10 @@ ENV                             | default value           | description
 `LDAP_GROUP_DN`                 | `ou=groups`             | Groups DN to be prepended to the Base DN
 `LDAP_SEARCH_FOR_GROUPS`        | `False`                 | Search for groups
 `LDAP_GROUP_SEARCH_SCOPE`       | `LEVEL`                 | Specifies what scope to search in when searching for a specific group
+`LDAP_GROUP_OBJECT_FILTER`      | `(objectclass=group)`   | Specifies what object filter to apply when searching for groups
+`LDAP_GROUP_MEMBERS_ATTR`       | `uniqueMember`          | Specifies the LDAP attribute where group members are declared
+`LDAP_GROUP_NAME_ATTRIBUTE`     | `cn`                    | Group name attribute in LDAP group response
+`LDAP_GET_GROUP_ATTRIBUTES`     | `*` (ALL_ATTRIBUTES)    | Specifies which LDAP attributes to get when searching LDAP for a group/groups
 `LDAP_USER_SEARCH_SCOPE`        | `LEVEL`                 | Specifies what scope to search in when searching for a specific user
 `LDAP_USER_RDN_ATTR`            | `cn`                    | The RDN attribute for your user schema on LDAP
 `LDAP_USER_LOGIN_ATTR`          | `cn`                    | The Attribute you want users to authenticate to LDAP with

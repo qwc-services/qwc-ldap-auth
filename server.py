@@ -39,6 +39,9 @@ SUPPORTED_LANGUAGES = ['en', 'de']
 # *Enable* WTForms built-in messages translation
 # https://wtforms.readthedocs.io/en/2.3.x/i18n/
 app.config['WTF_I18N_ENABLED'] = False
+# WTF CSRF protection conflicts with JWT CSRF protection
+# https://github.com/vimalloc/flask-jwt-extended/issues/15
+app.config['WTF_CSRF_ENABLED'] = False
 
 # https://flask-ldap3-login.readthedocs.io/en/latest/quick_start.html
 

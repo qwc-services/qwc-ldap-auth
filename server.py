@@ -4,7 +4,7 @@ import logging
 
 from urllib.parse import urlparse
 from flask import Flask, jsonify, request, flash, render_template, redirect, \
-    make_response, url_for, render_template_string, get_flashed_messages
+    make_response, url_for, render_template_string, get_flashed_messages, abort
 from flask_login import LoginManager, current_user, login_user, logout_user, \
     UserMixin
 from flask_jwt_extended import (
@@ -13,7 +13,7 @@ from flask_jwt_extended import (
     get_jwt_identity, set_access_cookies,
     set_refresh_cookies, unset_jwt_cookies
 )
-from flask_ldap3_login import LDAP3LoginManager
+from flask_ldap3_login import LDAP3LoginManager, AuthenticationResponseStatus
 from flask_ldap3_login.forms import LDAPLoginForm
 import i18n
 from qwc_services_core.jwt import jwt_manager
@@ -23,8 +23,8 @@ from qwc_services_core.tenant_handler import (
 
 app = Flask(__name__)
 
-app.config['JWT_COOKIE_SECURE'] = bool(os.environ.get(
-    'JWT_COOKIE_SECURE', False))
+app.config['JWT_COOKIE_SECURE'] = os.environ.get(
+    'JWT_COOKIE_SECURE', 'False') == 'True'
 app.config['JWT_COOKIE_SAMESITE'] = os.environ.get(
     'JWT_COOKIE_SAMESITE', 'Lax')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = int(os.environ.get(
@@ -105,7 +105,6 @@ app.config['LDAP_GET_GROUP_ATTRIBUTES'] = os.environ.get(
     'LDAP_GET_GROUP_ATTRIBUTES', '*')  # LDAP_GROUP_NAME_ATTRIBUTE
 
 
-app.config['DEBUG'] = os.environ.get('FLASK_ENV', '') == 'development'
 if app.config['DEBUG']:
     logging.getLogger('flask_ldap3_login').setLevel(logging.DEBUG)
 
@@ -239,6 +238,30 @@ def login():
 
     return render_template('login.html', form=form, i18n=i18n,
                            title=i18n.t("auth.login_page_title"))
+
+
+@app.route('/verify_login', methods=['POST'])
+def verify_login():
+    """Verify user login (e.g. from basic auth header)."""
+    req = request.form
+    username = req.get('username')
+    password = req.get('password')
+    if username:
+        result = ldap_manager.authenticate(username, password)
+
+        if result.status == AuthenticationResponseStatus.success:
+            user = ldap_manager._save_user(
+                result.user_dn, result.user_id, result.user_info,
+                result.user_groups
+            )
+            identity = {'username': user.username, 'groups': user.groups}
+            # access_token = create_access_token(identity)
+            return jsonify({"identity": identity})
+        else:
+            app.logger.info(
+                "verify_login: Invalid username or password")
+            abort(401)
+    abort(401)
 
 
 @app.route('/logout', methods=['GET', 'POST'])

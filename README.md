@@ -44,6 +44,8 @@ Endpoints:
 
     http://localhost:5017/logout
 
+    http://localhost:5017//verify_login
+
 
 Development
 -----------
@@ -60,6 +62,25 @@ Install requirements:
 
     pip install -r requirements.txt
 
+Configure environment:
+
+    echo FLASK_ENV=development >.flaskenv
+
 Start local service:
 
     python server.py
+
+Testing with https://github.com/rroemhild/docker-test-openldap
+
+    docker run -d -p 10389:10389 -p 10636:10636 rroemhild/test-openldap:2.1
+
+Start service:
+
+    LDAP_PORT=10389 LDAP_BIND_USER_DN="cn=admin,dc=planetexpress,dc=com" LDAP_BIND_USER_PASSWORD=GoodNewsEveryone LDAP_BASE_DN="dc=planetexpress,dc=com" LDAP_USER_DN="ou=people" LDAP_GROUP_DN="ou=people" LDAP_SEARCH_FOR_GROUPS=True LDAP_GROUP_MEMBERS_ATTR="member" python server.py
+
+* User: Philip J. Fry
+* Password: fry
+
+Service login test:
+
+    curl http://localhost:5017/verify_login -d 'username=Philip J. Fry' -d 'password=fry'

@@ -153,7 +153,7 @@ class User(UserMixin):
                 for g in groups if not None
             ]
         else:
-            group_names = None
+            group_names = []
         self.groups = group_names
         app.logger.debug("Login username: %s" % username)
         app.logger.debug("LDAP username: %s" % self.username)

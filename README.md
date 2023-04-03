@@ -29,6 +29,7 @@ ENV                             | default value           | description
 `LDAP_USER_LOGIN_ATTR`          | `cn`                    | The Attribute you want users to authenticate to LDAP with
 `LDAP_BIND_USER_DN`             | `None`                  | The Username to bind to LDAP with
 `LDAP_BIND_USER_PASSWORD`       | `None`                  | The Password to bind to LDAP with
+`GROUP_MAPPINGS`                | `None`                  | Expressions for group name mapping
 
 
 Usage
@@ -44,7 +45,7 @@ Endpoints:
 
     http://localhost:5017/logout
 
-    http://localhost:5017//verify_login
+    http://localhost:5017/verify_login
 
 
 Development

@@ -17,6 +17,7 @@ from flask_ldap3_login import LDAP3LoginManager, AuthenticationResponseStatus
 from flask_ldap3_login.forms import LDAPLoginForm
 import i18n
 from qwc_services_core.jwt import jwt_manager
+from qwc_services_core.auth import GroupNameMapper
 from qwc_services_core.tenant_handler import (
     TenantHandler, TenantPrefixMiddleware, TenantSessionInterface)
 
@@ -33,7 +34,8 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = int(os.environ.get(
 jwt = jwt_manager(app)
 app.secret_key = app.config['JWT_SECRET_KEY']
 
-i18n.set('load_path', [os.path.join(os.path.dirname(__file__), 'translations')])
+i18n.set('load_path', [os.path.join(
+    os.path.dirname(__file__), 'translations')])
 i18n.set('file_format', 'json')
 SUPPORTED_LANGUAGES = ['en', 'de']
 # *Enable* WTForms built-in messages translation
@@ -66,7 +68,7 @@ app.config['LDAP_SEARCH_FOR_GROUPS'] = os.environ.get(
     'LDAP_SEARCH_FOR_GROUPS', False)
 # Specifies what scope to search in when searching for a specific group
 app.config['LDAP_GROUP_SEARCH_SCOPE'] = os.environ.get(
-     'LDAP_GROUP_SEARCH_SCOPE', 'LEVEL')
+    'LDAP_GROUP_SEARCH_SCOPE', 'LEVEL')
 
 # Specifies what object filter to apply when searching for groups.
 app.config['LDAP_GROUP_OBJECT_FILTER'] = os.environ.get(
@@ -146,10 +148,11 @@ class User(UserMixin):
             self.username = username
 
         if groups:
+            mapper = GroupNameMapper()
             # LDAP query returns a dict like
             #   [{'cn': 'dl_qwc_login_r', ...}]
             group_names = [
-                g.get(LDAP_GROUP_NAME_ATTRIBUTE)
+                mapper.mapped_group(g.get(LDAP_GROUP_NAME_ATTRIBUTE))
                 for g in groups if not None
             ]
         else:
@@ -274,15 +277,15 @@ def logout():
     return resp
 
 
-""" readyness probe endpoint """
 @app.route("/ready", methods=['GET'])
 def ready():
+    """ readyness probe endpoint """
     return jsonify({"status": "OK"})
 
 
-""" liveness probe endpoint """
 @app.route("/healthz", methods=['GET'])
 def healthz():
+    """ liveness probe endpoint """
     return jsonify({"status": "OK"})
 
 

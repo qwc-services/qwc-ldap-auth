@@ -6,6 +6,7 @@ jobs:
 
     build:
       runs-on: ubuntu-latest
+      if: github.event_name != 'pull_request'
       steps:
 
       - uses: actions/checkout@master
@@ -21,7 +22,6 @@ jobs:
 
       - name: Build and publish docker image
         uses: elgohr/Publish-Docker-Github-Action@v5
-        if: github.event_name != 'pull_request'
         with:
           name: sourcepole/${{ github.event.repository.name }}
           username: ${{ secrets.DOCKER_HUB_USER }}

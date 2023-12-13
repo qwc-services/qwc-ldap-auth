@@ -25,7 +25,7 @@ from qwc_services_core.tenant_handler import (
 app = Flask(__name__)
 
 app.config['JWT_COOKIE_SECURE'] = os.environ.get(
-    'JWT_COOKIE_SECURE', 'False') == 'True'
+    'JWT_COOKIE_SECURE', 'False').lower() == 'true'
 app.config['JWT_COOKIE_SAMESITE'] = os.environ.get(
     'JWT_COOKIE_SAMESITE', 'Lax')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = int(os.environ.get(
@@ -51,7 +51,7 @@ app.config['LDAP_HOST'] = os.environ.get('LDAP_HOST', 'localhost')
 app.config['LDAP_PORT'] = int(os.environ.get('LDAP_PORT', 389))
 
 # Set to True if your server uses SSL
-app.config['LDAP_USE_SSL'] = os.environ.get('LDAP_USE_SSL', False)
+app.config['LDAP_USE_SSL'] = os.environ.get('LDAP_USE_SSL', 'False').lower() == 'true'
 
 # Base DN of your directory
 app.config['LDAP_BASE_DN'] = os.environ.get(

@@ -37,7 +37,7 @@ Usage
 
 Run standalone application:
 
-    python server.py
+    python src/server.py
 
 Endpoints:
 
@@ -69,7 +69,7 @@ Configure environment:
 
 Start local service:
 
-    python server.py
+    python src/server.py
 
 Testing with https://github.com/rroemhild/docker-test-openldap
 
@@ -77,7 +77,7 @@ Testing with https://github.com/rroemhild/docker-test-openldap
 
 Start service:
 
-    LDAP_PORT=10389 LDAP_BIND_USER_DN="cn=admin,dc=planetexpress,dc=com" LDAP_BIND_USER_PASSWORD=GoodNewsEveryone LDAP_BASE_DN="dc=planetexpress,dc=com" LDAP_USER_DN="ou=people" LDAP_GROUP_DN="ou=people" LDAP_SEARCH_FOR_GROUPS=True LDAP_GROUP_MEMBERS_ATTR="member" python server.py
+    LDAP_PORT=10389 LDAP_BIND_USER_DN="cn=admin,dc=planetexpress,dc=com" LDAP_BIND_USER_PASSWORD=GoodNewsEveryone LDAP_BASE_DN="dc=planetexpress,dc=com" LDAP_USER_DN="ou=people" LDAP_GROUP_DN="ou=people" LDAP_SEARCH_FOR_GROUPS=True LDAP_GROUP_MEMBERS_ATTR="member" python src/server.py
 
 * User: Philip J. Fry
 * Password: fry

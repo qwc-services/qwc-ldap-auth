@@ -11,6 +11,11 @@
                 </div>
      
                 <div class="login-form">
+                    {% if login_hint != "" and login_hint != None %}
+                    <div class="control-group login-hint">
+                        <span>{{ login_hint }}</span>
+                    </div>
+                    {% endif %}
                     <div class="control-group">
                     <input type="text" class="login-field" value="" 
                            placeholder="{{ i18n.t('auth.username_placeholder') }}" name="username" autofocus="">

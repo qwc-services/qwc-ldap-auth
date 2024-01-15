@@ -18,6 +18,7 @@ from flask_ldap3_login.forms import LDAPLoginForm
 import i18n
 from qwc_services_core.jwt import jwt_manager
 from qwc_services_core.auth import GroupNameMapper
+from qwc_services_core.runtime_config import RuntimeConfig
 from qwc_services_core.tenant_handler import (
     TenantHandler, TenantPrefixMiddleware, TenantSessionInterface)
 
@@ -115,12 +116,10 @@ login_manager = LoginManager(app)              # Setup a Flask-Login Manager
 ldap_manager = LDAP3LoginManager(app)          # Setup a LDAP3 Login Manager.
 
 
-if os.environ.get('TENANT_HEADER'):
-    app.wsgi_app = TenantPrefixMiddleware(
-        app.wsgi_app, os.environ.get('TENANT_HEADER'))
+tenant_handler = TenantHandler(app.logger)
 
-if os.environ.get('TENANT_HEADER') or os.environ.get('TENANT_URL_RE'):
-    app.session_interface = TenantSessionInterface(os.environ)
+app.wsgi_app = TenantPrefixMiddleware(app.wsgi_app)
+app.session_interface = TenantSessionInterface(os.environ)
 
 
 # Create a dictionary to store the users in when they authenticate.
@@ -209,6 +208,10 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    config_handler = RuntimeConfig("ldapAuth", app.logger)
+    tenant = tenant_handler.tenant()
+    config = config_handler.tenant_config(tenant)
+
     target_url = url_path(request.args.get('url', '/'))
     if current_user.is_authenticated:
         return redirect(target_url)
@@ -239,8 +242,16 @@ def login():
                 errors.remove('Invalid Username/Password.')
                 errors.append(i18n.t('auth.auth_failed'))
 
+    login_hint = config.get('login_hint')
+    if isinstance(login_hint, dict):
+        login_hint = login_hint.get(
+            i18n.get('locale'),
+            login_hint.get('en', '')
+        )
+
     return render_template('login.html', form=form, i18n=i18n,
-                           title=i18n.t("auth.login_page_title"))
+                           title=i18n.t("auth.login_page_title"),
+                           login_hint=login_hint)
 
 
 @app.route('/verify_login', methods=['POST'])

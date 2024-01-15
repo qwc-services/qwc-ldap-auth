@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/qwc-services/qwc-ldap-auth/master/schemas/qwc-ldap-auth.json",
+  "title": "QWC LDAP authentication service",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "title": "JSON Schema",
+      "description": "Reference to JSON schema of this config",
+      "type": "string",
+      "format": "uri",
+      "default": "https://raw.githubusercontent.com/qwc-services/qwc-ldap-auth/master/schemas/qwc-ldap-auth.json"
+    },
+    "service": {
+      "title": "Service name",
+      "type": "string",
+      "const": "ldap-auth"
+    },
+    "config": {
+      "title": "Config options",
+      "type": "object",
+      "properties": {
+        "login_hint":{
+          "description": "Login hint text, shown above login form fields. Either a string, or dictionary `{\"<lang>\": \"<text>\"}`. When providing a dictionary, the entry matching the current locale will be searched, with fallback to `en` if no entry for the current locale exists, and fallback to an empty string if no `en` entry exists.",
+          "type": {
+            "oneOf":[
+              {"type": "string"},
+              {
+                "type": "object",
+                "patternProperties": {
+                  "^[a-z]{2}$": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+      ]
+    }
+  },
+  "required": [
+    "service",
+    "config"
+  ]
+}

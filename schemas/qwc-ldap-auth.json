@@ -22,19 +22,17 @@
       "properties": {
         "login_hint":{
           "description": "Login hint text, shown above login form fields. Either a string, or dictionary `{\"<lang>\": \"<text>\"}`. When providing a dictionary, the entry matching the current locale will be searched, with fallback to `en` if no entry for the current locale exists, and fallback to an empty string if no `en` entry exists.",
-          "type": {
-            "oneOf":[
-              {"type": "string"},
-              {
-                "type": "object",
-                "patternProperties": {
-                  "^[a-z]{2}$": {
-                    "type": "string"
-                  }
+          "oneOf":[
+            {"type": "string"},
+            {
+              "type": "object",
+              "patternProperties": {
+                "^[a-z]{2}$": {
+                  "type": "string"
                 }
               }
-            ]
-          }
+            }
+          ]
         }
       },
       "required": [

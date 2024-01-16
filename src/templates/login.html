@@ -13,7 +13,7 @@
                 <div class="login-form">
                     {% if login_hint != "" and login_hint != None %}
                     <div class="control-group login-hint">
-                        <span>{{ login_hint }}</span>
+                        <span>{{ login_hint|safe }}</span>
                     </div>
                     {% endif %}
                     <div class="control-group">

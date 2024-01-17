@@ -225,7 +225,7 @@ def login():
         if user.groups:
             identity = {'username': user.username, 'groups': user.groups}
         else:
-            identity = user.username
+            identity = {'username': user.username}
         # Create the tokens we will be sending back to the user
         access_token = create_access_token(identity)
         # refresh_token = create_refresh_token(identity)

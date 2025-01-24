@@ -11,7 +11,7 @@ See also [flask-ldap3-login](https://flask-ldap3-login.readthedocs.io/en/latest/
 
 ENV                             | default value           | description
 --------------------------------|-------------------------|---------
-`JWT_SECRET_KEY`                | `********`              | secret key for JWT token (same for all services) 
+`JWT_SECRET_KEY`                | `********`              | secret key for JWT token (same for all services)
 `LDAP_HOST`                     | `localhost`             | Hostname of your LDAP Server
 `LDAP_PORT`                     | `389`                   | The port number of your LDAP server.
 `LDAP_USE_SSL`                  | `False`                 | Set to True if your server uses SSL
@@ -37,7 +37,7 @@ Usage
 
 Run standalone application:
 
-    python src/server.py
+    uv run src/server.py
 
 Endpoints:
 
@@ -51,25 +51,13 @@ Endpoints:
 Development
 -----------
 
-Create a virtual environment:
-
-    python3 -m venv .venv
-
-Activate virtual environment:
-
-    source .venv/bin/activate
-
-Install requirements:
-
-    pip install -r requirements.txt
-
-Configure environment:
+Install dependencies and run service:
 
     echo FLASK_ENV=development >.flaskenv
 
 Start local service:
 
-    python src/server.py
+    uv run src/server.py
 
 Testing with https://github.com/rroemhild/docker-test-openldap
 
@@ -77,7 +65,7 @@ Testing with https://github.com/rroemhild/docker-test-openldap
 
 Start service:
 
-    LDAP_PORT=10389 LDAP_BIND_USER_DN="cn=admin,dc=planetexpress,dc=com" LDAP_BIND_USER_PASSWORD=GoodNewsEveryone LDAP_BASE_DN="dc=planetexpress,dc=com" LDAP_USER_DN="ou=people" LDAP_GROUP_DN="ou=people" LDAP_SEARCH_FOR_GROUPS=True LDAP_GROUP_MEMBERS_ATTR="member" python src/server.py
+    LDAP_PORT=10389 LDAP_BIND_USER_DN="cn=admin,dc=planetexpress,dc=com" LDAP_BIND_USER_PASSWORD=GoodNewsEveryone LDAP_BASE_DN="dc=planetexpress,dc=com" LDAP_USER_DN="ou=people" LDAP_GROUP_DN="ou=people" LDAP_SEARCH_FOR_GROUPS=True LDAP_GROUP_MEMBERS_ATTR="member" uv run src/server.py
 
 * User: Philip J. Fry
 * Password: fry

@@ -7,6 +7,9 @@
         <div class="login">
             <div class="login-screen">
                 <div class="app-title">
+                    {% if form.logo %}
+                        <img class="app-logo" src="{{form.logo}}" alt="logo" />
+                    {% endif %}
                     <h1>{{ i18n.t('auth.login_form_title') }}</h1>
                 </div>
      

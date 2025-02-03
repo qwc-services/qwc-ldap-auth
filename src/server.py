@@ -216,6 +216,9 @@ def login():
     if current_user.is_authenticated:
         return redirect(target_url)
     form = LDAPLoginForm(meta=wft_locales())
+    form.logo = config.get("logo_image_url", {})
+    form.background = config.get("background_image_url", {})
+    
     if form.validate_on_submit():
         user = form.user
         # flask_login stores user in session

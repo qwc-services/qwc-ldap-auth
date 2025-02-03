@@ -5,15 +5,31 @@
 *:focus {
   outline: none;
 }
-body {
+html, body {
   font-family: Arial;
   background-color: #a0a0a0;
   padding: 50px;
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
+
+.form-background {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
 .login {
-  margin: 20px auto;
+  margin: 50px auto;
   width: 300px;
 }
+
 .login-screen {
   background-color: #FFF;
   padding: 20px;
@@ -24,7 +40,12 @@ body {
   text-align: center;
   color: #777;
 }
- 
+
+.app-logo {
+  width: 220px;
+  height: 100px;
+}
+
 .login-form {
   text-align: center;
 }

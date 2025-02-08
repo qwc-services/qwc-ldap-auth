@@ -119,7 +119,7 @@ ldap_manager = LDAP3LoginManager(app)          # Setup a LDAP3 Login Manager.
 tenant_handler = TenantHandler(app.logger)
 
 app.wsgi_app = TenantPrefixMiddleware(app.wsgi_app)
-app.session_interface = TenantSessionInterface(os.environ)
+app.session_interface = TenantSessionInterface()
 
 
 # Create a dictionary to store the users in when they authenticate.

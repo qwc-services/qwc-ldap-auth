@@ -32,6 +32,34 @@ ENV                             | default value           | description
 `GROUP_MAPPINGS`                | `None`                  | Expressions for group name mapping
 
 
+## Customization
+
+You can add a custom logo and a custom background image by setting the following `config` options:
+
+```json
+"config": {
+  "background_image_url": "<url>",
+  "logo_image_url": "<url>"
+}
+```
+
+The specified URLs can be absolute or relative. For relative URLs, you can write i.e.
+
+```json
+"config": {
+  "background_image_url": "/auth/static/background.jpg",
+  "logo_image_url": "/auth/static/logo.jpg"
+}
+```
+
+where `/auth` is the service mountpoint and place your custom images inside the `static` subfolder of the auth-service, or, if using docker and docker-compose, mount them accordingly:
+
+    qwc-auth-service:
+      [...]
+      volumes:
+        - ./volumes/assets/Background.jpg:/srv/qwc_service/static/background.jpg
+        - ./volumes/assets/logo.png:/srv/qwc_service/static/logo.jpg
+
 Usage
 -----
 

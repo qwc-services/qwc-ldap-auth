@@ -33,6 +33,14 @@
               }
             }
           ]
+        },
+        "logo_image_url": {
+          "description": "URL to a logo image to show in the login form. Default: `null`",
+          "type": "string"
+        },
+        "background_image_url": {
+          "description": "URL to a background image for the login page. Default: `null`",
+          "type": "string"
         }
       },
       "required": [

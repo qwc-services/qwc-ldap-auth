@@ -16,8 +16,7 @@ from flask_jwt_extended import (
 from flask_ldap3_login import LDAP3LoginManager, AuthenticationResponseStatus
 from flask_ldap3_login.forms import LDAPLoginForm
 import i18n
-from qwc_services_core.jwt import jwt_manager
-from qwc_services_core.auth import GroupNameMapper
+from qwc_services_core.auth import auth_manager, GroupNameMapper, optional_auth
 from qwc_services_core.runtime_config import RuntimeConfig
 from qwc_services_core.tenant_handler import (
     TenantHandler, TenantPrefixMiddleware, TenantSessionInterface)
@@ -32,7 +31,7 @@ app.config['JWT_COOKIE_SAMESITE'] = os.environ.get(
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = int(os.environ.get(
     'JWT_ACCESS_TOKEN_EXPIRES', 12*3600))
 
-jwt = jwt_manager(app)
+jwt = auth_manager(app)
 app.secret_key = app.config['JWT_SECRET_KEY']
 
 i18n.set('load_path', [os.path.join(
@@ -214,7 +213,14 @@ def login():
 
     target_url = url_path(request.args.get('url', '/'))
     if current_user.is_authenticated:
-        return redirect(target_url)
+        if current_user.groups:
+            identity = {'username': current_user.username, 'groups': current_user.groups}
+        else:
+            identity = {'username': current_user.username}
+        access_token = create_access_token(identity)
+        resp = make_response(redirect(target_url))
+        set_access_cookies(resp, access_token)
+        return resp
     form = LDAPLoginForm(meta=wft_locales())
     form.logo = config.get("logo_image_url", {})
     form.background = config.get("background_image_url", {})
@@ -282,7 +288,7 @@ def verify_login():
 
 
 @app.route('/logout', methods=['GET', 'POST'])
-@jwt_required(optional=True)
+@optional_auth
 def logout():
     target_url = url_path(request.args.get('url', '/'))
     resp = make_response(redirect(target_url))

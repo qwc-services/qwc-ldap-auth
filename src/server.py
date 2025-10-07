@@ -213,7 +213,14 @@ def login():
 
     target_url = url_path(request.args.get('url', '/'))
     if current_user.is_authenticated:
-        return redirect(target_url)
+        if current_user.groups:
+            identity = {'username': current_user.username, 'groups': current_user.groups}
+        else:
+            identity = {'username': current_user.username}
+        access_token = create_access_token(identity)
+        resp = make_response(redirect(target_url))
+        set_access_cookies(resp, access_token)
+        return resp
     form = LDAPLoginForm(meta=wft_locales())
     form.logo = config.get("logo_image_url", {})
     form.background = config.get("background_image_url", {})

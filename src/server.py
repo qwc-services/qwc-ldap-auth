@@ -8,15 +8,13 @@ from flask import Flask, jsonify, request, flash, render_template, redirect, \
 from flask_login import LoginManager, current_user, login_user, logout_user, \
     UserMixin
 from flask_jwt_extended import (
-    jwt_required, create_access_token,
-    create_refresh_token, get_csrf_token,
-    get_jwt_identity, set_access_cookies,
-    set_refresh_cookies, unset_jwt_cookies
+    create_access_token, create_refresh_token, get_csrf_token,
+    set_access_cookies, set_refresh_cookies, unset_jwt_cookies
 )
 from flask_ldap3_login import LDAP3LoginManager, AuthenticationResponseStatus
 from flask_ldap3_login.forms import LDAPLoginForm
 import i18n
-from qwc_services_core.auth import auth_manager, GroupNameMapper, optional_auth
+from qwc_services_core.auth import auth_manager, GroupNameMapper, optional_auth, get_identity
 from qwc_services_core.runtime_config import RuntimeConfig
 from qwc_services_core.tenant_handler import (
     TenantHandler, TenantPrefixMiddleware, TenantSessionInterface)
@@ -204,6 +202,10 @@ def home():
 
     return render_template_string(template)
 
+@app.route('/identity')
+@optional_auth
+def index():
+    return jsonify(get_identity())
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

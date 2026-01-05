@@ -12,7 +12,9 @@ dependencies = [
     "Flask-WTF~=1.2.1",
     "flask-ldap3-login @ git+https://github.com/nickw444/flask-ldap3-login.git@dd1e9df71ff586a080afbf62923f00f4c3926776",
     "python-i18n~=0.3.9",
-    "qwc-services-core~=1.4.0"
+    "qwc-services-core~=1.4.0",
+    "sqlalchemy>=2.0.45",
+    "psycopg2>=2.9.11",
 ]
 
 [dependency-groups]

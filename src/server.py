@@ -15,6 +15,8 @@ from flask_ldap3_login import LDAP3LoginManager, AuthenticationResponseStatus
 from flask_ldap3_login.forms import LDAPLoginForm
 import i18n
 from qwc_services_core.auth import auth_manager, GroupNameMapper, optional_auth, get_identity
+from qwc_services_core.config_models import ConfigModels
+from qwc_services_core.database import DatabaseEngine
 from qwc_services_core.runtime_config import RuntimeConfig
 from qwc_services_core.tenant_handler import (
     TenantHandler, TenantPrefixMiddleware, TenantSessionInterface)
@@ -226,7 +228,7 @@ def login():
     form = LDAPLoginForm(meta=wft_locales())
     form.logo = config.get("logo_image_url", {})
     form.background = config.get("background_image_url", {})
-    
+
     if form.validate_on_submit():
         user = form.user
         # flask_login stores user in session
@@ -237,6 +239,9 @@ def login():
             identity = {'username': user.username, 'groups': user.groups}
         else:
             identity = {'username': user.username}
+
+        sync_user(config, user)
+
         # Create the tokens we will be sending back to the user
         access_token = create_access_token(identity)
         # refresh_token = create_refresh_token(identity)
@@ -263,6 +268,41 @@ def login():
     return render_template('login.html', form=form, i18n=i18n,
                            title=i18n.t("auth.login_page_title"),
                            login_hint=login_hint)
+
+def sync_user(config, ldap_user: User):
+    db_url = config.get('db_url', 'postgresql:///?service=qwc_configdb')
+    db_engine = DatabaseEngine()
+    qwc_config_schema = config.get('qwc_config_schema', 'qwc_config')
+    config_models = ConfigModels(
+        db_engine, db_url,
+        qwc_config_schema=qwc_config_schema,
+    )
+
+    UserType = config_models.model('users')
+    UserInfoType = config_models.model('user_infos')
+
+    with config_models.session() as db_session, db_session.begin():
+        user = db_session.query(UserType).filter_by(name=ldap_user.username).first()
+
+        if user is None:
+            # create new user
+            user = UserType()
+            db_session.add(user)
+            logging.debug(f"Create {ldap_user.username} in config DB")
+        else:
+            logging.debug(f"Update {ldap_user.username} in config DB")
+
+
+        user.name = ldap_user.username
+        # user.email = ldap_user.userinfo.get('email', '')
+
+        user_info = user.user_info
+        if user_info is None:
+            # create new user_info
+            user_info = UserInfoType()
+            # assign to user
+            user_info.user = user
+            db_session.add(user_info)
 
 
 @app.route('/verify_login', methods=['POST'])

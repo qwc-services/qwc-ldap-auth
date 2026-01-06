@@ -5,14 +5,14 @@ description = "Authentication with LDAP/Active Directory"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "Flask~=3.0.0",
-    "Werkzeug~=3.0.6",
-    "Flask-JWT-Extended~=4.6.0",
-    "flask_login~=0.6.3",
+    "Flask~=3.1.0",
+    "Werkzeug~=3.1.0",
+    "Flask-JWT-Extended~=4.7.0",
+    "Flask-Login~=0.6.3",
     "Flask-WTF~=1.2.1",
     "flask-ldap3-login @ git+https://github.com/nickw444/flask-ldap3-login.git@dd1e9df71ff586a080afbf62923f00f4c3926776",
     "python-i18n~=0.3.9",
-    "qwc-services-core~=1.4.0"
+    "qwc-services-core~=1.5.0"
 ]
 
 [dependency-groups]

@@ -271,6 +271,9 @@ def login():
 
 def sync_user(config, ldap_user: User):
     db_url = config.get('db_url', 'postgresql:///?service=qwc_configdb')
+    if db_url is None:
+        return
+
     db_engine = DatabaseEngine()
     qwc_config_schema = config.get('qwc_config_schema', 'qwc_config')
     config_models = ConfigModels(

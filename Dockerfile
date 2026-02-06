@@ -5,7 +5,8 @@ ADD pyproject.toml uv.lock ./
 
 # git: Required for pip with git repos
 RUN \
-    apk add --no-cache --update --virtual build-deps git && \
+    apk add --no-cache --update --virtual build-deps gcc python3-dev musl-dev libffi-dev git && \
+    apk add --no-cache --update --virtual postgresql-dev libpq-dev && \
     uv sync --frozen && \
     uv cache clean && \
     apk del build-deps

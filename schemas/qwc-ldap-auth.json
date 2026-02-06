@@ -41,6 +41,14 @@
         "background_image_url": {
           "description": "URL to a background image for the login page. Default: `null`",
           "type": "string"
+        },
+        "db_url": {
+          "description": "DB connection URL (to sync users and user_info_fields). Can be set to an empty string if sync is not needed. Default: `postgresql:///?service=qwc_configdb`",
+          "type": "string"
+        },
+        "qwc_config_schema": {
+          "description": "The name of the DB schema which stores the qwc config. Default: `qwc_config`",
+          "type": "string"
         }
       },
       "required": [

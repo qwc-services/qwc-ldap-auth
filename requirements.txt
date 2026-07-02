@@ -220,9 +220,9 @@ python-i18n==0.3.9 \
     --hash=sha256:bda5b8d889ebd51973e22e53746417bd32783c9bd6780fd27cadbb733915651d \
     --hash=sha256:df97f3d2364bf3a7ebfbd6cbefe8e45483468e52a9e30b909c6078f5f471e4e8
     # via qwc-ldap-auth
-qwc-services-core==1.5.2 \
-    --hash=sha256:1486702ddebc7847e6801dd0d923d55490a7fdbfdc2661b9e74f9ff80c48e756 \
-    --hash=sha256:c1b8ac16663a6be3d85267b26665cb681da0b4ef317a17c79a0f8a5523e08f63
+qwc-services-core==1.6.0 \
+    --hash=sha256:d69d5351ef3f66409bfa1232d5b3299829e5d02fd757e6fa3c9007a5e166733b \
+    --hash=sha256:d7a3424ba126e50cf5a6c6e8ad7e52266043356a87df52e8f08e483fa271bb8d
     # via qwc-ldap-auth
 sqlalchemy==2.0.51 \
     --hash=sha256:0378d055e9e8cd6ce4d8dff683bdd3d7d413533c4ee51d67a2b1e0f9eacc0f23 \

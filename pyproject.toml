@@ -1,6 +1,6 @@
 [project]
 name = "qwc-ldap-auth"
-version = "v2026.07.01"
+version = "v2026.08.05"
 description = "Authentication with LDAP/Active Directory"
 readme = "README.md"
 requires-python = ">=3.10"
